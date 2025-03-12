@@ -60,21 +60,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Optional<List<Task>> getTasksByStatus(String status) {
-        List<Task> tasks = taskRepository.findByStatus(status);
-        return tasks.isEmpty() ? Optional.empty() : Optional.of(tasks);
+    public List<Task> getTasksByStatus(String status) {
+        return taskRepository.findByStatus(status);
     }
 
     @Override
-    public Optional<List<Task>> getTasksByPriority(String priority) {
-        List<Task> tasks = taskRepository.findByPriority(priority);
-        return tasks.isEmpty() ? Optional.empty() : Optional.of(tasks);
+    public List<Task> getTasksByPriority(String priority) {
+        return taskRepository.findByPriority(priority);
     }
 
     @Override
-    public Optional<List<Task>> getTasksByProject(Long projectId) {
-        List<Task> tasks = taskRepository.findByProjectProjectId(projectId);
-        return tasks.isEmpty() ? Optional.empty() : Optional.of(tasks);
+    public List<Task> getTasksByProject(Long projectId) {
+        return taskRepository.findByProjectProjectId(projectId);
     }
 }
 

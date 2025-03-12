@@ -12,7 +12,8 @@ public interface TaskService {
     Task updateTask(Long taskId, Task taskDetails);
     void deleteTask(Long taskId);
     Task updateTaskStatus(Long taskId, String status);
-    Optional<List<Task>> getTasksByStatus(String status);
-    Optional<List<Task>> getTasksByPriority(String priority);
-    Optional<List<Task>> getTasksByProject(Long projectId);
+    List<Task> getTasksByStatus(String status);
+    List<Task> getTasksByPriority(String priority);
+    List<Task> getTasksByProject(Long projectId);
+
 }
