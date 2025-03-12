@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectId;
