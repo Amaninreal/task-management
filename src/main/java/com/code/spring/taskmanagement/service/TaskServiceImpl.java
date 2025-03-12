@@ -1,6 +1,8 @@
 package com.code.spring.taskmanagement.service;
 
 import com.code.spring.taskmanagement.entity.Task;
+import com.code.spring.taskmanagement.exception.BadRequestException;
+import com.code.spring.taskmanagement.exception.DuplicateResourceException;
 import com.code.spring.taskmanagement.exception.ResourceNotFoundException;
 import com.code.spring.taskmanagement.repository.TaskInterface;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(Task task) {
+        if (taskRepository.existsById(task.getTaskId())) {
+            throw new DuplicateResourceException("Task with ID " + task.getTaskId() + " already exists");
+        }
         return taskRepository.save(task);
     }
 
@@ -61,7 +66,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getTasksByStatus(String status) {
-        return taskRepository.findByStatus(status);
+        List<Task> tasks = taskRepository.findByStatus(status);
+        if (tasks.isEmpty()) {
+            throw new BadRequestException("No tasks found with status: " + status);
+        }
+        return tasks;
     }
 
     @Override
