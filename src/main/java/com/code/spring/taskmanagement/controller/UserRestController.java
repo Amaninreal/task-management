@@ -52,7 +52,7 @@ public class UserRestController {
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User savedUser = userService.createUser(user);
         log.info("New user created: {}", savedUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+                                                                                                                                        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
 
