@@ -4,7 +4,7 @@ import com.code.spring.taskmanagement.entity.Task;
 import com.code.spring.taskmanagement.exception.BadRequestException;
 import com.code.spring.taskmanagement.exception.DuplicateResourceException;
 import com.code.spring.taskmanagement.exception.ResourceNotFoundException;
-import com.code.spring.taskmanagement.repository.TaskInterface;
+import com.code.spring.taskmanagement.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
-    private final TaskInterface taskRepository;
+    private final TaskRepository taskRepository;
 
     @Override
     public Task createTask(Task task) {
