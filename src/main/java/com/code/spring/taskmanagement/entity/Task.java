@@ -1,5 +1,6 @@
 package com.code.spring.taskmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "projectId")
+    @JsonBackReference // Prevents infinite recursion
     private Project project;
 
     @ManyToOne
