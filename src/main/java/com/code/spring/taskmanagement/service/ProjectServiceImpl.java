@@ -2,6 +2,9 @@ package com.code.spring.taskmanagement.service;
 
 
 import com.code.spring.taskmanagement.entity.Project;
+import com.code.spring.taskmanagement.exception.BadRequestException;
+import com.code.spring.taskmanagement.exception.DuplicateResourceException;
+import com.code.spring.taskmanagement.exception.ValidationException;
 import com.code.spring.taskmanagement.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import com.code.spring.taskmanagement.exception.ResourceNotFoundException;
@@ -20,6 +23,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project createProject(Project project) {
+        // Validate input
+        if (project.getName() == null || project.getName().trim().isEmpty()) {
+            throw new ValidationException("Project name cannot be empty.");
+        }
+        if (project.getDescription() == null || project.getDescription().trim().isEmpty()) {
+            throw new ValidationException("Project description cannot be empty.");
+        }
+
+        if (projectRepository.existsByName(project.getName())) {
+            throw new DuplicateResourceException("Project with name '" + project.getName() + "' already exists.");
+        }
+
         return projectRepository.save(project);
     }
 
@@ -50,8 +65,15 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Optional<List<Project>> getProjectsByUser(Long userId) {
+    public List<Project> getProjectsByUser(Long userId) {
+        if (userId == null || userId < 1) {
+            throw new BadRequestException("Invalid user ID: " + userId);
+        }
+
         List<Project> projects = projectRepository.findByCreatedByUserId(userId);
-        return projects.isEmpty() ? Optional.empty() : Optional.of(projects);
+        if (projects.isEmpty()) {
+            throw new ResourceNotFoundException("No projects found for user ID: " + userId);
+        }
+        return projects;
     }
 }

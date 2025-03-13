@@ -19,7 +19,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(Task task) {
-        if (taskRepository.existsById(task.getTaskId())) {
+        if (task.getTaskId() != null && taskRepository.existsById(task.getTaskId())) {
             throw new DuplicateResourceException("Task with ID " + task.getTaskId() + " already exists");
         }
         return taskRepository.save(task);
@@ -68,19 +68,27 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> getTasksByStatus(String status) {
         List<Task> tasks = taskRepository.findByStatus(status);
         if (tasks.isEmpty()) {
-            throw new BadRequestException("No tasks found with status: " + status);
+            throw new ResourceNotFoundException("No tasks found with status: " + status);
         }
         return tasks;
     }
 
     @Override
     public List<Task> getTasksByPriority(String priority) {
-        return taskRepository.findByPriority(priority);
+        List<Task> tasks = taskRepository.findByPriority(priority);
+        if (tasks.isEmpty()) {
+            throw new ResourceNotFoundException("No tasks found with priority: " + priority);
+        }
+        return tasks;
     }
 
     @Override
     public List<Task> getTasksByProject(Long projectId) {
-        return taskRepository.findByProjectProjectId(projectId);
+        List<Task> tasks = taskRepository.findByProjectProjectId(projectId);
+        if (tasks.isEmpty()) {
+            throw new ResourceNotFoundException("No tasks found for project ID: " + projectId);
+        }
+        return tasks;
     }
 }
 

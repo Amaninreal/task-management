@@ -22,7 +22,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "projectId")
-    @JsonBackReference // Prevents infinite recursion
+    @JsonBackReference
     private Project project;
 
     @ManyToOne

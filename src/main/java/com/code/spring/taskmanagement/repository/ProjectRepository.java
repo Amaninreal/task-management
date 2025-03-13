@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByCreatedByUserId(Long userId);
+
+    boolean existsByName(String name);
 }

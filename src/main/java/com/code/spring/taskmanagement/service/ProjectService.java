@@ -12,5 +12,5 @@ public interface ProjectService {
     Optional<Project> getProjectById(Long projectId); // Return Optional
     Project updateProject(Long projectId, Project projectDetails);
     void deleteProject(Long projectId);
-    Optional<List<Project>> getProjectsByUser(Long userId); // Return Optional
+    List<Project> getProjectsByUser(Long userId); // Return Optional
 }

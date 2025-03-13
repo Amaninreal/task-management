@@ -88,8 +88,7 @@ public class ProjectRestController {
      */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Project>> getProjectsByUser(@PathVariable("userId") Long userId) {
-        List<Project> projects = projectService.getProjectsByUser(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("No projects found for user with ID: " + userId));
+        List<Project> projects = projectService.getProjectsByUser(userId);
         return ResponseEntity.ok(projects);
     }
 }
