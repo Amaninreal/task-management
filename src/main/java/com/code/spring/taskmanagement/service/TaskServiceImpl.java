@@ -1,7 +1,6 @@
 package com.code.spring.taskmanagement.service;
 
 import com.code.spring.taskmanagement.entity.Task;
-import com.code.spring.taskmanagement.exception.BadRequestException;
 import com.code.spring.taskmanagement.exception.DuplicateResourceException;
 import com.code.spring.taskmanagement.exception.ResourceNotFoundException;
 import com.code.spring.taskmanagement.repository.TaskRepository;
