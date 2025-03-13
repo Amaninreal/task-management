@@ -32,6 +32,6 @@ public class User {
     private List<Project> projects;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignedTo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Task> tasks;
 }

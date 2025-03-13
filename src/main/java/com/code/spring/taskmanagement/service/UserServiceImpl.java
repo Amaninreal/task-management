@@ -1,9 +1,11 @@
 package com.code.spring.taskmanagement.service;
 
+import com.code.spring.taskmanagement.entity.Task;
 import com.code.spring.taskmanagement.entity.User;
 import com.code.spring.taskmanagement.exception.BadRequestException;
 import com.code.spring.taskmanagement.exception.DuplicateResourceException;
 import com.code.spring.taskmanagement.exception.ResourceNotFoundException;
+import com.code.spring.taskmanagement.repository.TaskRepository;
 import com.code.spring.taskmanagement.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,11 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
 
-    public UserServiceImpl(UserRepository theUserRepository){
+    public UserServiceImpl(UserRepository theUserRepository, TaskRepository theTaskRepository){
         userRepository = theUserRepository;
+        taskRepository = theTaskRepository;
     }
 
     // added implementation for return all Users
@@ -67,8 +71,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void deleteUser(Long userId) {
-        User user = getUserById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+
+        // unassigning user from all tasks before deleting
+        if (user.getTasks() != null && !user.getTasks().isEmpty()) {
+            for (Task task : user.getTasks()) {
+                task.setAssignedTo(null);
+            }
+            taskRepository.saveAll(user.getTasks());
+        }
         userRepository.delete(user);
     }
 }
