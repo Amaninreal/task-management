@@ -28,10 +28,12 @@ public class User {
     private Boolean active;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    // a user can create multiple projects
     private List<Project> projects;
 
     @JsonIgnore
     @OneToMany(mappedBy = "assignedTo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    // a user can create multiple tasks
     private List<Task> tasks;
 }

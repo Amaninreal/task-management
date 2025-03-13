@@ -1,5 +1,6 @@
 package com.code.spring.taskmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -23,12 +24,14 @@ public class Project {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "createdBy")
+    @JsonIgnore
+    // the user who created the project
     private User createdBy;
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonManagedReference
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    // a projects can have multiple tasks
     private List<Task> tasks;
 }

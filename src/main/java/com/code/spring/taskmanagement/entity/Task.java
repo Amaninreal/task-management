@@ -1,6 +1,8 @@
 package com.code.spring.taskmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,12 +22,15 @@ public class Task {
     private String priority;
     private LocalDate deadline;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectId")
-    @JsonBackReference
+    @JsonIgnore
+    // a project where the task belongs
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignedTo")
+    @JsonIgnore
+    // The user assigned to the task
     private User assignedTo;
 }
