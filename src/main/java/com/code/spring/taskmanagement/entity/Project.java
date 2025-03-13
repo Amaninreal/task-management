@@ -28,7 +28,7 @@ public class Project {
     @JoinColumn(name = "createdBy")
     private User createdBy;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonManagedReference
     private List<Task> tasks;
 }

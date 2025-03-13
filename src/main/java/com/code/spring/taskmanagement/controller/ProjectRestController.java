@@ -6,6 +6,7 @@ import com.code.spring.taskmanagement.service.ProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -75,10 +76,10 @@ public class ProjectRestController {
      * @return ResponseEntity with a success message
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable("id") Long projectId) {
+    public ResponseEntity<String> deleteProject(@PathVariable("id") Long projectId) {
         projectService.deleteProject(projectId);
         log.info("Project deleted with ID: {}", projectId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Project with ID " + projectId + " has been deleted successfully.");
     }
 
     /**

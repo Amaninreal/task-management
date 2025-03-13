@@ -6,19 +6,26 @@ import com.code.spring.taskmanagement.exception.BadRequestException;
 import com.code.spring.taskmanagement.exception.DuplicateResourceException;
 import com.code.spring.taskmanagement.exception.ValidationException;
 import com.code.spring.taskmanagement.repository.ProjectRepository;
+import com.code.spring.taskmanagement.repository.TaskRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.code.spring.taskmanagement.exception.ResourceNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository) {
+    private final TaskRepository taskRepository;
+
+    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
     }
 
     @Override
@@ -58,9 +65,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteProject(Long projectId) {
         Project project = getProjectById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + projectId));
+        taskRepository.deleteAllByProject(project);
         projectRepository.delete(project);
     }
 
