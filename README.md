@@ -60,9 +60,11 @@ com.code.spring.taskmanagement/
    ```
 2. **Configure Database** in `src/main/resources/application.properties`
    ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/task_db
+   spring.datasource.url=jdbc:h2:file:./data/bookdb
+   spring.datasource.driverClassName=org.h2.Driver
    spring.datasource.username=root
    spring.datasource.password=your_password
+   spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
    spring.jpa.hibernate.ddl-auto=update
    ```
 3. **Build the project**
