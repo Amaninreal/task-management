@@ -36,4 +36,9 @@ public class User {
     @OneToMany(mappedBy = "assignedTo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     // a user can create multiple tasks
     private List<Task> tasks;
+
+    // a user can add comments
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comments> comments;
 }
