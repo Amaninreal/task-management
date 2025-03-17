@@ -6,6 +6,9 @@ import com.code.spring.taskmanagement.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,8 +35,8 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         user = new User();
-        user.setUsername("testUser");
-        user.setEmail("test@example.com");
+        user.setUsername("user");
+        user.setEmail("user@test.com");
         user.setRole("ADMIN");
         user.setActive(true);
 
@@ -49,7 +52,7 @@ class UserServiceTest {
 
         assertFalse(users.isEmpty());
         assertEquals(1, users.size());
-        assertEquals("testUser", users.get(0).getUsername());
+        assertEquals("user", users.getFirst().getUsername());
     }
 
     @Test
@@ -68,7 +71,7 @@ class UserServiceTest {
         Optional<User> foundUser = userService.getUserById(1L);
 
         assertTrue(foundUser.isPresent());
-        assertEquals("testUser", foundUser.get().getUsername());
+        assertEquals("user", foundUser.get().getUsername());
     }
 
     @Test
@@ -87,8 +90,27 @@ class UserServiceTest {
         User createdUser = userService.createUser(user);
 
         assertNotNull(createdUser);
-        assertEquals("testUser", createdUser.getUsername());
+        assertEquals("user", createdUser.getUsername());
         verify(userRepository, times(1)).save(user);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/test-users.csv", numLinesToSkip = 1)
+    void testCreateUser(String username, String email, String role) {
+        User testUser = new User();
+        testUser.setUsername(username);
+        testUser.setEmail(email);
+        testUser.setRole(role);
+        testUser.setActive(true);
+
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+        User createdUser = userService.createUser(testUser);
+
+        assertNotNull(createdUser);
+        assertEquals(username, createdUser.getUsername());
+        assertEquals(email, createdUser.getEmail());
+        assertEquals(role, createdUser.getRole());
     }
 
     @Test
@@ -137,7 +159,7 @@ class UserServiceTest {
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> userService.deleteUser(1L));
 
-        assertEquals("User not found with id: 1", exception.getMessage());
+        assertEquals("User not found with ID: 1", exception.getMessage());
     }
 }
 
