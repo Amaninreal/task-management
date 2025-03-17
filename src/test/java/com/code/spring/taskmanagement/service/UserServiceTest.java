@@ -3,6 +3,7 @@ package com.code.spring.taskmanagement.service;
 import com.code.spring.taskmanagement.entity.User;
 import com.code.spring.taskmanagement.exception.ResourceNotFoundException;
 import com.code.spring.taskmanagement.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
@@ -110,6 +112,7 @@ class UserServiceTest {
         assertEquals(username, createdUser.getUsername());
         assertEquals(email, createdUser.getEmail());
         assertEquals(role, createdUser.getRole());
+        log.info(createdUser.getUsername());
     }
 
     @Test
