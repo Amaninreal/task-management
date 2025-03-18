@@ -21,6 +21,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final String cacheName = "userCache";
 
     public UserServiceImpl(UserRepository theUserRepository, TaskRepository theTaskRepository){
         userRepository = theUserRepository;
@@ -38,14 +39,14 @@ public class UserServiceImpl implements UserService{
         return users;
     }
 
-    @Cacheable(value = "userCache", key = "#userId")
+    @Cacheable(value = cacheName, key = "#userId")
     @Override
     public Optional<User> getUserById(Long userId) {
         return Optional.ofNullable(userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId)));
     }
 
-    @Cacheable(value = "userCache", key = "#result.id")
+    @Cacheable(value = cacheName, key = "#result.id")
     @CacheEvict(value = "usersCache", key = "'allUsers'")
     @Override
     public User createUser(User user) {
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService{
         return userRepository.save(user);
     }
 
-    @CachePut(value = "userCache", key = "#userId")
+    @CachePut(value = cacheName, key = "#userId")
     @CacheEvict(value = "usersCache", key = "'allUsers'")
     @Override
     public User updateUser(Long userId, User userDetails) {
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @CacheEvict(value = {"userCache", "usersCache"}, allEntries = true)
+    @CacheEvict(value = {cacheName, "usersCache"}, allEntries = true)
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
