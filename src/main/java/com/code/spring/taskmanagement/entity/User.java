@@ -3,11 +3,9 @@ package com.code.spring.taskmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -15,9 +13,10 @@ import java.util.List;
 @Table(name = "Users")
 @Data
 @ToString(exclude = "projects")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

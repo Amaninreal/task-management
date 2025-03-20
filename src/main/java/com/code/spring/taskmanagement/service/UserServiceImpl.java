@@ -46,8 +46,7 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId)));
     }
 
-    @Cacheable(value = cacheName, key = "#result.id")
-    @CacheEvict(value = "usersCache", key = "'allUsers'")
+    @CachePut(value = cacheName, key = "#result.userId", unless = "#result == null")
     @Override
     public User createUser(User user) {
         if (user.getUsername() == null || user.getEmail() == null) {
