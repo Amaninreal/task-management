@@ -29,46 +29,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Bearer
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String requestURI = request.getRequestURI();
+
+        // skipping JWT validation for OAuth2 endpoints
+        if (requestURI.startsWith("/oauth2") || requestURI.startsWith("/login/oauth2")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // bearer token handler
         String requestHeader = request.getHeader("Authorization");
         log.info("Header :  {}", requestHeader);
         String username = null;
         String token = null;
+
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
-            //looking good
             token = requestHeader.substring(7);
             try {
                 username = this.jwtHelper.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
-                logger.info("Illegal Argument while fetching the username !!");
-                e.printStackTrace();
+                log.info("Illegal Argument while fetching the username !!", e);
             } catch (ExpiredJwtException e) {
-                logger.info("Given jwt token is expired !!");
-                e.printStackTrace();
+                log.info("Given jwt token is expired !!", e);
             } catch (MalformedJwtException e) {
-                logger.info("Some changed has done in token !! Invalid Token");
-                e.printStackTrace();
+                log.info("Some change has been made to the token !! Invalid Token", e);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("JWT Exception: ", e);
             }
         } else {
-            logger.info("Invalid Header Value !! ");
+            log.info("Invalid Header Value !! ");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            //fetch user detail from username
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
+            boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
             if (validateToken) {
-                //set the authentication
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                logger.info("Validation fails !!");
+                log.info("Validation fails !!");
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }
+
