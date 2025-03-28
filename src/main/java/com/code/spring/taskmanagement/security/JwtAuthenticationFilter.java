@@ -6,8 +6,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,27 +21,35 @@ import java.io.IOException;
 
 @Component
 @Slf4j
-@AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtHelper jwtHelper;
-
-
+    private final JwtHelper jwtHelper;
+    private final ApplicationContext applicationContext;
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    public JwtAuthenticationFilter(JwtHelper jwtHelper, ApplicationContext applicationContext) {
+        this.jwtHelper = jwtHelper;
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        if (userDetailsService == null) {
+            userDetailsService = applicationContext.getBean(UserDetailsService.class);
+        }
+
         String requestURI = request.getRequestURI();
 
-        // skipping JWT validation for OAuth2 endpoints
+        // Skipping JWT validation for OAuth2 endpoints
         if (requestURI.startsWith("/oauth2") || requestURI.startsWith("/login/oauth2")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // bearer token handler
+        // Bearer token handler
         String requestHeader = request.getHeader("Authorization");
         log.info("Header :  {}", requestHeader);
         String username = null;
@@ -79,4 +88,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
