@@ -2,22 +2,16 @@ name: Task Management Workflow
 
 on:
   push:
-    branches:
-      - main
-      - feature-branch
-      - comment-feature
+    branches: [ "main", "feature-branch", "comment-feature" ]
   pull_request:
-    branches:
-      - main
-      - feature-branch
-      - comment-feature
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
@@ -27,18 +21,32 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Clean Project
+      - name: Clean project
         run: mvn clean
 
       - name: Run Tests
         run: mvn test
 
-      - name: Build Project
+      - name: Build with Maven
         run: mvn -B package --file pom.xml
 
-      - name: Upload Surefire Test Reports
-        if: always()
+      - name: Upload Test Report
         uses: actions/upload-artifact@v4
         with:
           name: surefire-reports
-          path: target/surefire-reports/
+          path: target/surefire-reports
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t taskmanagement-app .
+
+      - name: Tag Docker image
+        run: docker tag taskmanagement-app ${{ secrets.DOCKER_USERNAME }}/taskmanagement-app:latest
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/taskmanagement-app:latest
