@@ -28,15 +28,17 @@ public class SecurityFilterConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
-        return security.csrf(csrf -> csrf.disable())
+        return security
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/authenticate", "/oauth2/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated() // 👈 Always keep this LAST
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(oAuth2SuccessHandler) // Custom success handler
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

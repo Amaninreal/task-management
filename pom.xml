@@ -85,13 +85,45 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
+		<!-- Core Spring Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- OAuth2 client support -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<!-- OAuth2 resource server (for JWT validation) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<!-- JWT library -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.bucket4j/bucket4j_jdk17-core -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j_jdk17-core</artifactId>
+			<version>8.14.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.bucket4j/bucket4j_jdk17-lettuce -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j_jdk17-lettuce</artifactId>
+			<version>8.14.0</version>
+		</dependency>
+
+		<!-- Redis client dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
 		<!-- Spring Boot Testing -->
@@ -100,13 +132,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-api</artifactId>
-			<version>0.11.5</version>
-		</dependency>
-
 
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
@@ -121,14 +146,6 @@
 			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
 			<version>0.11.5</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 
 	</dependencies>

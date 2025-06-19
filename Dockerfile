@@ -1,20 +1,19 @@
-# Use an official Java runtime as a parent image
-FROM eclipse-temurin:21-jdk-jammy
+# -------- STAGE 1: Build the application --------
+FROM maven:3.9.6-eclipse-temurin-21-jammy AS builder
 
-# Install Maven
-RUN apt-get update && apt-get install -y maven
-
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Maven project files (including pom.xml) into the container
-COPY . /app
+COPY . .
 
-# Run Maven to build the project (this will generate the JAR file)
-RUN mvn clean install
+RUN mvn clean package -DskipTests
 
-# Expose the application port (adjust based on your app's port)
+# -------- STAGE 2: Run the application --------
+FROM eclipse-temurin:21-jdk-jammy
+
+WORKDIR /app
+
+COPY --from=builder /app/target/taskmanagement-0.0.1-SNAPSHOT.jar app.jar
+
 EXPOSE 8080
 
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "/app/target/taskmanagement-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
