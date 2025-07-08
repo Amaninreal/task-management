@@ -24,7 +24,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private final LettuceBasedProxyManager<String> proxyManager;
     private final RateLimiterProperties properties;
 
-    @SuppressWarnings("deprecation")
     public RateLimitFilter(StatefulRedisConnection<String, byte[]> connection, RateLimiterProperties properties) {
         this.proxyManager = LettuceBasedProxyManager.builderFor(connection).build();
         this.properties = properties;
